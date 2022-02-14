@@ -2,6 +2,7 @@
 Virtuage - QEMU (Linux loaded) running through VNC in a browser, display showed using Data URLs and &lt;img&gt; tags.
 
 # Notes
+- You do not have to download QEMU as it is included in this repo.
 - Keys are delayed a few MS, so when you type something, it will take less than a second for the keys to show up.
 - Some keys (such as arrow keys) will not work because the keysym list kinda sucks
 - Mouse support is not added because moving the mouse programmatically simply does not work.
