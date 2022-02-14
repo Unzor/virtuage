@@ -9,16 +9,17 @@ settings.vnc = "127.0.0.1:1";
 function json_to_args(e) {
   var n = [];
   for (var t in e) {
-    n.push("-" + e + " " + e[t]);
-    console.log(e, e[t])
+    n.push("-" + t + " " + e[t]);
   }
   return n.join(" ")
 }
+
 settings = json_to_args(settings);
 const VncClient = require("vnc-rfb-client");
 const Jimp = require("jimp");
 spawn(`qemu-system-x86_64 ${settings}`, {
-  shell: true
+  shell: true,
+  stdio: "inherit"
 });
 var index = 0;
 const express = require("express");
