@@ -1372,9 +1372,9 @@ app.get("/", (e, n) => {
 		                socket.emit('keydown', e.key);
 		} else {
 		if (e.key == "Enter") {
-		                socket.emit('keydown', "\r");
+		                socket.emit('keydown', "\\r");
 						} else if (e.key == "Backspace") {
-								                socket.emit('keydown', "\b");
+								                socket.emit('keydown', "\\b");
 						}
 }
         }
