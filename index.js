@@ -2,7 +2,7 @@ var isRunning = false;
 const {
     spawn
 } = require("child_process");
-var settings = JSON.parse(fs.readFileSync("settings.json").toString()).args.split(" ").split("&&").shift().split(";").shift();
+var settings = JSON.parse(fs.readFileSync("settings.json").toString()).args.split(" ");
 settings.push("-vnc");
 settings.push("127.0.0.1:1");
 const VncClient = require('vnc-rfb-client');
