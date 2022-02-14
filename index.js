@@ -3,13 +3,24 @@ var isRunning = false;
 const {
     spawn
 } = require("child_process");
-var settings = JSON.parse(fs.readFileSync("settings.json").toString()).args.split(" ");
-settings.push("-vnc");
-settings.push("127.0.0.1:1");
+var settings = JSON.parse(fs.readFileSync("settings.json").toString());
+settings.vnc = "127.0.0.1:1";
+
+function json_to_args(j){
+var arrs = [];
+for (var thing in j) {
+arrs.push("-" + j + " " + j[thing]);
+console.log(j, j[thing]);
+}
+return arrs.join(" ");
+}
+
+settings = json_to_args(settings);
+
 const VncClient = require('vnc-rfb-client');
 const Jimp = require('jimp');
 
-spawn(`qemu-system-x86_64`, settings);
+spawn(`qemu-system-x86_64 ${settings}`, {shell: true});
 var index = 0;
 const express = require('express');
 const app = express();
