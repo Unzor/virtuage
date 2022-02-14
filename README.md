@@ -3,6 +3,7 @@ Virtuage - QEMU (Linux loaded) running through VNC in a browser, display showed 
 
 # Notes
 - QEMU is needed for running.
+- Some keys (such as arrow keys) will not work because the keysym list kinda sucks
 - Mouse support is not added because it simply does not work.
 
 # How to run
