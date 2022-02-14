@@ -2,10 +2,13 @@ var isRunning = false;
 const {
     spawn
 } = require("child_process");
+var settings = JSON.parse(fs.readFileSync("settings.json").toString()).args.split(" ");
+settings.push("-vnc");
+settings.push("127.0.0.1:1");
 const VncClient = require('vnc-rfb-client');
 const Jimp = require('jimp');
 
-spawn(`qemu-system-x86_64`, ["-cdrom", "linux.iso", "-vnc", "127.0.0.1:1"]);
+spawn(`qemu-system-x86_64`, settings);
 var fs = require("fs");
 var index = 0;
 const express = require('express');
