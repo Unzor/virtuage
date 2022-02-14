@@ -1,95 +1,83 @@
 var fs = require("fs");
 var isRunning = false;
 const {
-    spawn
+  spawn
 } = require("child_process");
 var settings = JSON.parse(fs.readFileSync("settings.json").toString());
 settings.vnc = "127.0.0.1:1";
 
-function json_to_args(j){
-var arrs = [];
-for (var thing in j) {
-arrs.push("-" + j + " " + j[thing]);
-console.log(j, j[thing]);
+function json_to_args(e) {
+  var n = [];
+  for (var t in e) {
+    n.push("-" + e + " " + e[t]);
+    console.log(e, e[t])
+  }
+  return n.join(" ")
 }
-return arrs.join(" ");
-}
-
 settings = json_to_args(settings);
-
-const VncClient = require('vnc-rfb-client');
-const Jimp = require('jimp');
-
-spawn(`qemu-system-x86_64 ${settings}`, {shell: true});
+const VncClient = require("vnc-rfb-client");
+const Jimp = require("jimp");
+spawn(`qemu-system-x86_64 ${settings}`, {
+  shell: true
+});
 var index = 0;
-const express = require('express');
+const express = require("express");
 const app = express();
-const http = require('http');
+const http = require("http");
 var keysyms = require("./keysyms");
 const server = http.createServer(app);
 const {
-    Server
+  Server
 } = require("socket.io");
 const io = new Server(server);
-
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
+app.get("/", (e, n) => {
+  n.sendFile(__dirname + "/index.html")
 });
-
-io.on('connection', (socket) => {
-    socket.on('run', () => {
-		if (!isRunning) {
-			isRunning = true;
-			global.client = new VncClient();
-
-        // Just 1 update per second
-        client.changeFps(100);
-        client.connect({
-            host: '127.0.0.1',
-            port: 5901
+io.on("connection", e => {
+  e.on("run", () => {
+    if (!isRunning) {
+      isRunning = true;
+      global.client = new VncClient;
+      client.changeFps(100);
+      client.connect({
+        host: "127.0.0.1",
+        port: 5901
+      });
+      client.on("connectError", e => {
+        console.log(e)
+      });
+      client.on("authError", () => {
+        console.log("Authentication failed.")
+      });
+      client.on("frameUpdated", e => {
+        new Jimp({
+          width: client.clientWidth,
+          height: client.clientHeight,
+          data: client.getFb()
+        }, (e, n) => {
+          if (e) {
+            console.log(e)
+          }
+          const t = `a.jpg`;
+          n.write(`${t}`)
         });
-
-
-
-        client.on('connectError', (err) => {
-            console.log(err);
-        });
-
-        client.on('authError', () => {
-            console.log('Authentication failed.');
-        });
-
-        client.on('frameUpdated', (data) => {
-            new Jimp({
-                width: client.clientWidth,
-                height: client.clientHeight,
-                data: client.getFb()
-            }, (err, image) => {
-                if (err) {
-                    console.log(err);
-                }
-                const fileName = `a.jpg`;
-                image.write(`${fileName}`);
-            });
-            io.emit("frame", "data:image/png;base64," + fs.readFileSync("a.jpg").toString("base64"));
-        });
-        socket.on('keydown', function(data) {
-            var key = data;
-            console.log(key, keysyms[key]);
-            client.sendKeyEvent(keysyms[key], true);
-        });
-	  } else {
-		    socket.on('keydown', function(data) {
-            var key = data;
-            console.log(key, keysyms[key]);
-            client.sendKeyEvent(keysyms[key], true);
-			});
-			
-			io.emit("frame", "data:image/png;base64," + fs.readFileSync("a.jpg").toString("base64"));			
-	  }
-    })
+        io.emit("frame", "data:image/png;base64," + fs.readFileSync("a.jpg").toString("base64"))
+      });
+      e.on("keydown", function(e) {
+        var n = e;
+        console.log(n, keysyms[n]);
+        client.sendKeyEvent(keysyms[n], true)
+      })
+    } else {
+      e.on("keydown", function(e) {
+        var n = e;
+        console.log(n, keysyms[n]);
+        client.sendKeyEvent(keysyms[n], true)
+      });
+      io.emit("frame", "data:image/png;base64," + fs.readFileSync("a.jpg").toString("base64"))
+    }
+  })
 });
-
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+server.listen(3e3, () => {
+  console.log("listening on localhost:3000")
 });
