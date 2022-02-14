@@ -1,3 +1,4 @@
+var fs = require("fs");
 var isRunning = false;
 const {
     spawn
@@ -9,7 +10,6 @@ const VncClient = require('vnc-rfb-client');
 const Jimp = require('jimp');
 
 spawn(`qemu-system-x86_64`, settings);
-var fs = require("fs");
 var index = 0;
 const express = require('express');
 const app = express();
